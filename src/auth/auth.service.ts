@@ -54,8 +54,8 @@ export class AuthService {
     const decoded = this.jwtService.decode(token) as any;
     const expiresAt = new Date(decoded.exp * 1000); 
 
-    const blacklistedToken = new this.blacklistedTokenModel({ token, expiresAt });
-    await blacklistedToken.save();
+    const blacklistedToken = await this.blacklistedTokenModel.create({ token, expiresAt });
+    await blacklistedToken;
   }
 
   async registerUser(
