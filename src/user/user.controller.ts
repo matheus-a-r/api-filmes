@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -40,8 +40,10 @@ export class UserController {
     description: '', 
     type: [ResponseUserDto] 
   })
-  async findAll() {
-    return await this.userService.findAll();
+  async findAll(): Promise<ResponseUserDto[]> {
+    const usersModel = await this.userService.findAll();
+    const users = usersModel.map((user) => ({id: user.id, name: user.name, email: user.email}))
+    return users
   }
 
   @Get(':id')
@@ -63,10 +65,11 @@ export class UserController {
     } 
   })
   async findOne(@Param('id') id: string): Promise<ResponseUserDto> {
-    return await this.userService.findOne(id);
+    const user = await this.userService.findOne(id);
+    return {id: user.id, name: user.name, email: user.email};
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Atualiza um usuário pelo id.' })
   @ApiResponse({ 
     status: 200, 
@@ -85,7 +88,8 @@ export class UserController {
     } 
   })
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<ResponseUserDto> {
-    return  await this.userService.update(id, updateUserDto);
+    const user = await this.userService.update(id, updateUserDto);
+    return {id: user.id, name: user.name, email: user.email};
   }
 
   @Delete(':id')
@@ -107,6 +111,8 @@ export class UserController {
     } 
   })
   async remove(@Param('id') id: string): Promise<ResponseUserDto> {
-    return await this.userService.remove(id);
+    const user = await this.userService.remove(id)
+    
+    return {id: user.id, name: user.name, email: user.email};
   }
 }
