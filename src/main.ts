@@ -11,9 +11,9 @@ async function bootstrap() {
   app.useGlobalFilters(new MongoExceptionFilter());
 
   const config = new DocumentBuilder()
-    .setTitle('Bigu API')
+    .setTitle('API Filmes')
     .setDescription(
-      'API para aplicativo de caronas universitárias',
+      'API teste capyba',
     )
     .setVersion('0.1')
     .addBearerAuth(

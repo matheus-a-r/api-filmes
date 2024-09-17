@@ -130,7 +130,7 @@ export class AuthService {
 
     const mailOptions = {
       from: '123testetst123@gmail.com',
-      to: 'matheus.rafael@ccc.ufcg.edu.br',
+      to: email,
       subject: 'Your Token',
       text: `Your token is: ${token}`,
     };

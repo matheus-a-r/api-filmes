@@ -66,7 +66,7 @@ export class AuthController {
       );
       return { token, user: userResponse };
     } catch (error) {
-      throw new UnauthorizedException('Credenciais inválidas.');
+      throw new UnauthorizedException('Invalid credentials.');
     }
   }
 
