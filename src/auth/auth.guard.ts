@@ -17,10 +17,12 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid token.');
     }
 
-    const user = await this.authService.validateToken(token);
+    const user = await this.authService.validateToken(token, false);
     if (!user) {
-      throw new NotFoundException(`User ${user.id} not found.`);
+      throw new NotFoundException(`User not found.`);
     }
+
+    user.token = token;
 
     request.user = user;
     return true;

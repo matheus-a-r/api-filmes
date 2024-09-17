@@ -19,6 +19,7 @@ describe('UserService', () => {
     findByIdAndUpdate: jest.fn(),
     findByIdAndDelete: jest.fn(),
     exec: jest.fn(),
+    findOne: jest.fn()
   };
 
   beforeEach(async () => {

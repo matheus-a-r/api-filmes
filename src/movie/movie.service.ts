@@ -11,7 +11,7 @@ export class MovieService {
     page: number,
     limit: number,
     search: string,
-    year: string,
+    year: number,
     orderBy: string,
     order: 'asc' | 'desc',
   ) {

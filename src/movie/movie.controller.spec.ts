@@ -1,99 +1,107 @@
-// import { Test, TestingModule } from '@nestjs/testing';
-// import { UserController } from './user.controller';
-// import { UserService } from './user.service';
-// import { CreateUserDto } from './dto/create-user.dto';
-// import { UpdateUserDto } from './dto/update-user.dto';
-// import { ResponseUserDto } from './dto/response-user.dto';
-// import { NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { MovieController } from './movie.controller';
+import { MovieService } from './movie.service';
+import { BadRequestException } from '@nestjs/common';
+import { AuthService } from '../auth/auth.service';
 
-// describe('UserController', () => {
-//   let controller: UserController;
-//   let service: UserService;
+// Interface genérica para o retorno dos filmes
+interface MovieDto {
+  id: string;
+  title: string;
+  year: number;
+  cast: string[];
+  genres: string[];
+  href: string;
+  extract: string;
+  thumbnail: string;
+  thumbnail_width: number;
+  thumbnail_height: number;
+}
 
-//   const mockUser = { id: '1', name: 'John Doe', email: 'johndoe@test.com' };
-//   const mockUsers = [{ id: '1', name: 'John Doe', email: 'johndoe@test.com' }, { id: '1', name: 'Joana Doe', email: 'joanadoe@test.com' }];
+describe('MovieController', () => {
+  let controller: MovieController;
+  let service: MovieService;
 
-//   const mockUserService = {
-//     create: jest.fn().mockResolvedValue(mockUser),
-//     findAll: jest.fn().mockResolvedValue(mockUsers),
-//     findOne: jest.fn().mockImplementation((id: string) => {
-//       if (id === '1') {
-//         return Promise.resolve(mockUser);
-//       }
-//       throw new NotFoundException(`The user ${id} does not exist.`);
-//     }),
-//     update: jest.fn().mockResolvedValue(mockUser),
-//     remove: jest.fn().mockResolvedValue(mockUser),
-//   };
+  // Mock do serviço de filmes
+  const mockMovieService = {
+    findAll: jest.fn(),
+  };
 
-//   beforeEach(async () => {
-//     const module: TestingModule = await Test.createTestingModule({
-//       controllers: [UserController],
-//       providers: [
-//         {
-//           provide: UserService,
-//           useValue: mockUserService,
-//         },
-//       ],
-//     }).compile();
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [MovieController],
+      providers: [
+        {
+          provide: MovieService,
+          useValue: mockMovieService,
+        },
+        {
+            provide: AuthService,
+            useValue: {}
+        }
+      ],
+    }).compile();
 
-//     controller = module.get<UserController>(UserController);
-//     service = module.get<UserService>(UserService);
-//   });
+    controller = module.get<MovieController>(MovieController);
+    service = module.get<MovieService>(MovieService);
+  });
 
-//   it('should be defined', () => {
-//     expect(controller).toBeDefined();
-//   });
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
 
-//   describe('create', () => {
-//     it('should create a user', async () => {
-//       const createUserDto: CreateUserDto = { name: 'John Doe', email: 'johndoe@test.com', password:"password123" };
-//       expect(await controller.create(createUserDto)).toEqual(mockUser);
-//       expect(service.create).toHaveBeenCalledWith(createUserDto);
-//     });
-//   });
+  describe('findAll', () => {
+    const result = {
+      totalItems: 100,
+      items: [
+        {
+          id: 'abc123',
+          title: 'Inception',
+          year: 2020,
+          cast: ['Leonardo DiCaprio', 'Joseph Gordon-Levitt'],
+          genres: ['Action', 'Sci-Fi'],
+          href: 'https://example.com/movie',
+          extract: 'A brief extract of the movie...',
+          thumbnail: 'https://example.com/thumbnail.jpg',
+          thumbnail_width: 200,
+          thumbnail_height: 300,
+        } as MovieDto,
+      ],
+      page: 1,
+      limit: 10,
+    } as any;
 
-//   describe('findAll', () => {
-//     it('should return an array of users', async () => {
-//       expect(await controller.findAll()).toEqual(mockUsers);
-//       expect(service.findAll).toHaveBeenCalled();
-//     });
-//   });
+    it('should return a paginated list of movies with default parameters', async () => {
+      jest.spyOn(service, 'findAll').mockResolvedValue(result);
 
-//   describe('findOne', () => {
-//     it('should return a single user', async () => {
-//       expect(await controller.findOne('1')).toEqual(mockUser);
-//       expect(service.findOne).toHaveBeenCalledWith('1');
-//     });
+      expect(await controller.findAll()).toEqual(result);
+    });
 
-//     it('should throw NotFoundException if user does not exist', async () => {
-//       await expect(controller.findOne('2')).rejects.toThrow(NotFoundException);
-//     });
-//   });
+    it('should return a paginated list of movies with specified page and page_size', async () => {
+      const params = { pageQ: 2, limitQ: 5 };
+      jest.spyOn(service, 'findAll').mockResolvedValue(result);
 
-//   describe('update', () => {
-//     it('should update a user', async () => {
-//       const updateUserDto: UpdateUserDto = { name: 'John Doe', email: 'johndoe@test.com' };
-//       expect(await controller.update('1', updateUserDto)).toEqual(mockUser);
-//       expect(service.update).toHaveBeenCalledWith('1', updateUserDto);
-//     });
+      expect(await controller.findAll(params.pageQ, params.limitQ, undefined, undefined, undefined, undefined)).toEqual(result);
+    });
 
-//     it('should throw NotFoundException if user does not exist', async () => {
-//       jest.spyOn(service, 'update').mockRejectedValue(new NotFoundException('The user 2 does not exist.'));
-//       const updateUserDto: UpdateUserDto = { name: 'John Doe', email: 'johndoe@test.com' };
-//       await expect(controller.update('2', updateUserDto)).rejects.toThrow(NotFoundException);
-//     });
-//   });
+    it('should return a paginated list of movies with search term', async () => {
+      const params = { searchQ: 'action' };
+      jest.spyOn(service, 'findAll').mockResolvedValue(result);
 
-//   describe('remove', () => {
-//     it('should remove a user', async () => {
-//       expect(await controller.remove('1')).toEqual(mockUser);
-//       expect(service.remove).toHaveBeenCalledWith('1');
-//     });
+      expect(await controller.findAll(1, 10, params.searchQ, undefined, undefined, undefined)).toEqual(result);
+    });
 
-//     it('should throw NotFoundException if user does not exist', async () => {
-//       jest.spyOn(service, 'remove').mockRejectedValue(new NotFoundException('The user 2 does not exist.'));
-//       await expect(controller.remove('2')).rejects.toThrow(NotFoundException);
-//     });
-//   });
-// });
+    it('should return a paginated list of movies filtered by year', async () => {
+      const params = { yearQ: 2023 };
+      jest.spyOn(service, 'findAll').mockResolvedValue(result);
+
+      expect(await controller.findAll(1, 10, undefined, params.yearQ, undefined, undefined)).toEqual(result);
+    });
+
+    it('should handle errors correctly', async () => {
+      jest.spyOn(service, 'findAll').mockRejectedValue(new BadRequestException('Invalid parameters'));
+
+      await expect(controller.findAll(1, 10, 'horror', 2023, 'releaseDate', 'asc')).rejects.toThrow(BadRequestException);
+    });
+  });
+});
