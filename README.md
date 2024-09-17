@@ -12,12 +12,12 @@
 
 ## Rodar o projeto
 
-```bash
-$ docker compose up --build -d
+```
+docker compose up --build -d
 ```
 
 Após os containers estiverem UP, rode o comando a seguir para a collection **movie** ser populada com o arquivo **movies-2020s.json**
 
-```bash
-$ xxxxx
+```
+xxxxx
 ```
