@@ -13,21 +13,32 @@ export class UserController {
 
   @Post()
   @ApiOperation({ summary: 'Cria um usuário.' })
-  @ApiResponse({ 
-    status: 201, 
-    description: 'The record has been successfully created.', 
-    type: ResponseUserDto 
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+    type: ResponseUserDto
   })
-  @ApiResponse({ 
-    status: 400, 
-    description: 'Validation error', 
-    schema: { 
-      example: { 
-        statusCode: 400, 
-        message: 'Validation failed', 
-        error: 'Bad Request' 
-      } 
-    } 
+  @ApiResponse({
+    status: 400,
+    description: 'Validation error',
+    schema: {
+      example: {
+        statusCode: 400,
+        message: ['email must be a valid email', 'password must be longer than 6 characters'],
+        error: 'Bad Request'
+      }
+    }
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Email already exists.',
+    schema: {
+      example: {
+        statusCode: 409,
+        message: 'Email already exists',
+        error: 'Conflict',
+      },
+    },
   })
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
@@ -35,19 +46,29 @@ export class UserController {
 
   @Get()
   @ApiOperation({ summary: 'Return all users' })
-  @ApiResponse({ 
-    status: 200, 
-    description: '', 
-    type: [ResponseUserDto] 
+  @ApiResponse({
+    status: 200,
+    description: 'List of all users',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', example: 'abc123' },
+          name: { type: 'string', example: 'John Doe' },
+          email: { type: 'string', example: 'john.doe@example.com' },
+        },
+      },
+    },
   })
   async findAll(): Promise<ResponseUserDto[]> {
     const usersModel = await this.userService.findAll();
-    const users = usersModel.map((user) => ({id: user.id, name: user.name, email: user.email}))
-    return users
+    const users = usersModel.map((user) => ({ id: user.id, name: user.name, email: user.email }));
+    return users;
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Retorna um usuário pelo id.' })
+  @ApiOperation({ summary: 'Return a user by id' })
   @ApiResponse({ 
     status: 200, 
     description: 'The user has been successfully returned.', 
@@ -78,7 +99,7 @@ export class UserController {
   })
   @ApiResponse({ 
     status: 404, 
-    description: 'The user has been successfully returned.', 
+    description: 'The user does not exist.', 
     schema: { 
       example: { 
         statusCode: 404, 

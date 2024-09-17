@@ -8,6 +8,9 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { ResponseUserDto } from '../user/dto/response-user.dto';
 import { BlacklistedToken } from './schemas/token.schema';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import * as jwt from 'jsonwebtoken';
+import * as nodemailer from 'nodemailer';
+import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {
@@ -50,12 +53,10 @@ export class AuthService {
     throw new UnauthorizedException('Invalid credentials');
   }
 
-  async logout(token: string): Promise<void> {
-    const decoded = this.jwtService.decode(token) as any;
-    const expiresAt = new Date(decoded.exp * 1000); 
+  async logout(token: string, exp: number): Promise<void> {
+    const expiresAt = new Date(exp * 1000); 
 
-    const blacklistedToken = await this.blacklistedTokenModel.create({ token, expiresAt });
-    await blacklistedToken;
+    await this.blacklistedTokenModel.create({ token, expiresAt });
   }
 
   async registerUser(
@@ -95,12 +96,45 @@ export class AuthService {
     if(userUpdated) return { message: 'Password updated successfully' }
   }
 
-  async validateToken(token: string) {
+  async validateToken(token: string, confirm: boolean) {
     try {
-      const decoded = this.jwtService.verify(token);
+      const decoded = this.jwtService.verify(token, {
+        secret: jwtConstants.secret,
+      });
+      if(confirm){
+        const user = await this.userService.findByEmail(decoded.email);
+        await this.userService.update(user.id, {confirmedEmail: true});
+      }
       return decoded;
     } catch (error) {
-      return null;
+      throw new BadRequestException('Invalid or expired token.');
     }
+  }
+
+  async generateToken(email: string): Promise<string> {
+    const user = await this.userService.findByEmail(email);
+    if (!user){
+      throw new NotFoundException(`The user ${email} does not exist.`);
+    }
+    return jwt.sign({ email }, jwtConstants.secret, { expiresIn: '15m' });
+  }
+
+  async sendTokenByEmail(email: string, token: string): Promise<void> {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: '123testetst123@gmail.com',
+        pass: 'oozz wxnl vaew mguj',
+      },
+    });
+
+    const mailOptions = {
+      from: '123testetst123@gmail.com',
+      to: 'matheus.rafael@ccc.ufcg.edu.br',
+      subject: 'Your Token',
+      text: `Your token is: ${token}`,
+    };
+
+    await transporter.sendMail(mailOptions);
   }
 }

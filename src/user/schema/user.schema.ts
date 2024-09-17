@@ -11,7 +11,11 @@ export class User extends Document {
   email: string;
   
   @Prop({ required: true })
+  confirmedEmail: boolean
+  
+  @Prop({ required: true })
   password: string;
+
 
 }
 
