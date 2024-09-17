@@ -17,6 +17,7 @@ export class MovieService {
   ) {
     
     const query = this.movieModel.find();
+    const totalItems = await this.movieModel.countDocuments(query.getFilter());
 
     if (year) {
       query.where('year').equals(year); 
@@ -36,8 +37,6 @@ export class MovieService {
       query.sort({ [orderBy]: sortOption });
     }
 
-    
-    const totalItems = await this.movieModel.countDocuments(query.getFilter());
     query.skip((page - 1) * limit).limit(limit);
 
     

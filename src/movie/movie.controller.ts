@@ -1,6 +1,6 @@
 import { Controller, Get, Query, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { MovieService } from './movie.service';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/auth.guard';
 import { UserService } from 'src/user/user.service';
 
@@ -10,6 +10,7 @@ export class MovieController {
   constructor(private readonly movieService: MovieService, private readonly userService: UserService) {}
 
   @Get()
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get a paginated list of movies with optional filters' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number for pagination', example: 1 })
@@ -73,6 +74,7 @@ export class MovieController {
     return { totalItems, items, page, limit };
   }
 
+  @ApiBearerAuth('access-token')
   @Get("restrict")
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get a paginated list of movies with optional filters' })
@@ -80,7 +82,7 @@ export class MovieController {
   @ApiQuery({ name: 'page_size', required: false, type: Number, description: 'Number of items per page', example: 10 })
   @ApiQuery({ name: 'search', required: false, type: String, description: 'Search term to filter movies', example: 'horror' })
   @ApiQuery({ name: 'year', required: false, type: Number, description: 'Filter by release year', example: 2023 })
-  @ApiQuery({ name: 'orderBy', required: false, type: String, description: 'Field to order by', example: 'releaseDate' })
+  @ApiQuery({ name: 'orderBy', required: false, type: String, description: 'Field to order by', example: 'year' })
   @ApiQuery({ name: 'order', required: false, enum: ['asc', 'desc'], description: 'Order direction', example: 'asc' })
   @ApiResponse({
     status: 200,
