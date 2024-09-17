@@ -3,8 +3,6 @@ import { MovieController } from './movie.controller';
 import { MovieService } from './movie.service';
 import { BadRequestException } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
-
-// Interface genérica para o retorno dos filmes
 interface MovieDto {
   id: string;
   title: string;
@@ -22,7 +20,6 @@ describe('MovieController', () => {
   let controller: MovieController;
   let service: MovieService;
 
-  // Mock do serviço de filmes
   const mockMovieService = {
     findAll: jest.fn(),
   };
