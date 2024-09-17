@@ -12,7 +12,7 @@ export class UserController {
   
 
   @Post()
-  @ApiOperation({ summary: 'Cria um usuário.' })
+  @ApiOperation({ summary: 'Create a user.' })
   @ApiResponse({
     status: 201,
     description: 'The record has been successfully created.',
@@ -91,7 +91,7 @@ export class UserController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Atualiza um usuário pelo id.' })
+  @ApiOperation({ summary: 'Update user by id' })
   @ApiResponse({ 
     status: 200, 
     description: 'The user has been successfully updated.', 
@@ -108,21 +108,32 @@ export class UserController {
       } 
     } 
   })
+  @ApiResponse({ 
+    status: 400, 
+    description: 'Validation error', 
+    schema: { 
+      example: { 
+        statusCode: 400, 
+        message: ['name should not be empty'], 
+        error: 'Bad Request' 
+      } 
+    } 
+  })
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<ResponseUserDto> {
     const user = await this.userService.update(id, updateUserDto);
     return {id: user.id, name: user.name, email: user.email};
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Remove um usuário pelo id.' })
+  @ApiOperation({ summary: 'Remove user by id.' })
   @ApiResponse({ 
     status: 200, 
-    description: 'The user has been successfully updated.', 
+    description: 'The user has been successfully removed.', 
     type: ResponseUserDto 
   })
   @ApiResponse({ 
     status: 404, 
-    description: 'The user has been successfully returned.', 
+    description: 'The user has been successfully removed.', 
     schema: { 
       example: { 
         statusCode: 404, 

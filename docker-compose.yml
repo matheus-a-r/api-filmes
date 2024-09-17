@@ -17,9 +17,7 @@ services:
     ports:
       - "27018:27017"
     volumes:
-      - mongo-data:/data/db
       - ./movies-2020s.json:/docker-entrypoint-initdb.d/movies-2020s.json
-      - ./init.js:/docker-entrypoint-initdb.d/init.js:ro
     networks:
       - app-network
 
