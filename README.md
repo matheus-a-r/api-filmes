@@ -6,7 +6,7 @@
 
 ## Pré-requisitos
 
-1. [Node]
+1. [Node](https://nodejs.org/pt)
 
 2. [Docker](https://docs.docker.com/engine/install/)
 
