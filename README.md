@@ -3,20 +3,13 @@
 ## Sumário
 - [Pré-requisitos](#pré-requisitos)
 - [Rodar o projeto](#rodaroprojeto)
+- [Testes](#testes)
 
 ## Pré-requisitos
 
 1. [Node](https://nodejs.org/pt) A versão utilizada no desenvolvimento do projeto foi a **20.16**.
 
 2. [Docker](https://docs.docker.com/engine/install/)
-
-## Testes
-
-Para a executar os testes que foram feitos, vá até o diretório raiz do projeto e execute o comando abaixo.
-
-```
-npm test
-```
 
 ## Rodar o projeto
 
@@ -33,3 +26,11 @@ docker exec -it <CONTAINER_ID_DO_MONGO> mongoimport --db Filmes --collection mov
 ```
 
 Depois desses passos, o swagger da aplicação deve estar disponível na url **http://localhost:3000/swagger**
+
+## Testes
+
+Para a executar os testes que foram feitos, vá até o diretório raiz do projeto e execute o comando abaixo.
+
+```
+npm test
+```
