@@ -5,7 +5,6 @@ import { Model } from 'mongoose';
 import { User } from './interface/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ResponseUserDto } from './dto/response-user.dto';
 import * as bcrypt from 'bcrypt';
 
 describe('UserService', () => {
