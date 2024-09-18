@@ -12,7 +12,11 @@
 
 ## Testes
 
-Para a executar os testes que foram feitos, vá até o diretório raiz do projeto e execute o comando **npm test**.
+Para a executar os testes que foram feitos, vá até o diretório raiz do projeto e execute o comando abaixo.
+
+```
+npm test
+```
 
 ## Rodar o projeto
 
