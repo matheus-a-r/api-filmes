@@ -12,6 +12,8 @@
 
 ## Rodar o projeto
 
+Após clonar o repositório, execute o comando abaixo.
+
 ```
 docker compose up --build -d
 ```
@@ -21,3 +23,5 @@ Após os containers estiverem UP, rode o comando a seguir para a collection **mo
 ```
 docker exec -it <CONTAINER_ID_DO_MONGO> mongoimport --db Filmes --collection movies --file /docker-entrypoint-initdb.d/movies-2020s.json --jsonArray
 ```
+
+Depois desses passos, o swagger da aplicação deve estar disponível na url **http://localhost:3000/swagger**
