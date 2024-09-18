@@ -6,7 +6,7 @@
 
 ## Pré-requisitos
 
-1. [Node](https://nodejs.org/pt) -> A versão utilizada no desenvolvimento do projeto foi a **20.16**.
+1. [Node](https://nodejs.org/pt) A versão utilizada no desenvolvimento do projeto foi a **20.16**.
 
 2. [Docker](https://docs.docker.com/engine/install/)
 
