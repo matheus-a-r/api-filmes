@@ -19,4 +19,4 @@ jobs:
           embed-url: "${{ github.event.head_commit.url }}"
           embed-author-name: "${{ github.actor }}"
           embed-author-icon-url: "${{ github.event.sender.avatar_url }}"
-          embed-color: "03f8c4"
+          embed-color: 260292
