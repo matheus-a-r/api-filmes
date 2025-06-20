@@ -1,0 +1,22 @@
+name: Discord Push Notification
+
+on:
+  push:
+    branches:
+      - main
+      - production
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Discord Notification
+        uses: tsickert/discord-webhook@v5.3.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          content: "🚀 **Novo push na branch `${{ github.ref_name }}`**"
+          embed-title: "${{ github.event.head_commit.message }}"
+          embed-url: "${{ github.event.head_commit.url }}"
+          embed-author-name: "${{ github.actor }}"
+          embed-author-icon-url: "${{ github.event.sender.avatar_url }}"
+          embed-color: "03f8c4"
