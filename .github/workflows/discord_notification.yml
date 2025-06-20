@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - production
+  workflow_dispatch: # Mantendo a opção de rodar manualmente para testes
 
 jobs:
   notify:
@@ -19,4 +20,5 @@ jobs:
           embed-url: "${{ github.event.head_commit.url }}"
           embed-author-name: "${{ github.actor }}"
           embed-author-icon-url: "${{ github.event.sender.avatar_url }}"
-          embed-color: "03f8c4"
+          # --- LINHA CORRIGIDA ABAIXO ---
+          embed-color: 260292
